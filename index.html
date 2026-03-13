@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Connect | Find Your Match</title>
+    
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            --primary: #db2777;
+            --primary-hover: #be185d;
+            --bg-color: #fdf2f8;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --card-bg: #ffffff;
+            --nav-bg: #ffffff;
+            --hero-bg: linear-gradient(135deg, #fdf2f8 0%, #fbcfe8 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --text-dark: #f9fafb;
+            --text-light: #9ca3af;
+            --card-bg: #1f2937;
+            --nav-bg: #1f2937;
+            --hero-bg: linear-gradient(135deg, #111827 0%, #374151 100%);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; background-color: var(--bg-color); color: var(--text-dark); 
+            overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .hidden { display: none !important; }
+
+        /* === LANDING PAGE === */
+        #landing-page {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 100vh; background: var(--hero-bg);
+            text-align: center; padding: 20px;
+        }
+        #landing-page h1 { color: var(--primary); font-size: 4em; margin-bottom: 5px; }
+        #landing-page p { color: var(--text-light); font-size: 1.2em; max-width: 500px; margin-bottom: 30px; }
+
+        .auth-container {
+            background: var(--card-bg); padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 350px;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        input {
+            padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1em;
+            outline: none; background-color: var(--bg-color); color: var(--text-dark);
+            width: 100%; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .btn { 
+            background-color: var(--primary); color: white; border: none; 
+            padding: 12px; font-size: 1.1em; cursor: pointer; border-radius: 8px; 
+            font-weight: bold; transition: all 0.3s ease; width: 100%;
+        }
+        .btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+
+        /* === NAVBAR === */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background: var(--nav-bg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .navbar h2 { margin: 0; color: var(--primary); }
+        .nav-controls { display: flex; gap: 15px; align-items: center; }
+        .theme-toggle, .logout-btn {
+            background: transparent; border: 2px solid var(--primary);
+            color: var(--text-dark); padding: 6px 15px; border-radius: 20px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .logout-btn { border-color: #6b7280; color: #6b7280; }
+        .logout-btn:hover { background: #6b7280; color: white; }
+
+        /* === UPLOAD SECTION === */
+        .upload-section {
+            background: var(--card-bg); max-width: 500px; margin: 20px auto;
+            padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .upload-section form { display: flex; flex-direction: column; gap: 10px; }
+        input[type="file"] { padding: 10px; border: 1px dashed var(--primary); cursor: pointer; }
+
+        /* === PROFILES === */
+        .dashboard-header { text-align: center; padding: 20px 20px 10px; }
+        .profiles-grid {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; 
+            max-width: 1200px; margin: 20px auto 60px; padding: 0 20px;
+        }
+        .profile-card {
+            background: var(--card-bg); border-radius: 15px; overflow: hidden; width: 280px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;
+        }
+        .profile-card:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(0,0,0,0.2); }
+        .profile-img { width: 100%; height: 320px; object-fit: cover; object-position: center top; }
+        .profile-info { padding: 20px; text-align: center; }
+        .profile-name { font-size: 1.4em; font-weight: bold; color: var(--primary); margin: 0 0 5px 0; }
+        .profile-hobbies { font-size: 0.85em; color: var(--primary); font-weight: bold; margin-bottom: 10px; }
+        .profile-bio { color: var(--text-light); font-size: 0.9em; margin: 0 0 20px 0; line-height: 1.4; }
+        .card-actions { display: flex; justify-content: center; gap: 20px; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+        .action-btn {
+            width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.5em;
+            display: flex; justify-content: center; align-items: center; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .pass-btn { background: white; color: #ef4444; border: 2px solid #ef4444; }
+        .pass-btn:hover { background: #fee2e2; transform: scale(1.1); }
+        .like-btn { background: white; color: #10b981; border: 2px solid #10b981; }
+        .like-btn:hover { background: #d1fae5; transform: scale(1.1); }
+
+        @media (max-width: 768px) {
+            #landing-page h1 { font-size: 3em; }
+            .navbar { padding: 15px; flex-direction: column; gap: 10px; }
+            .profile-card { width: 100%; max-width: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <h1>Love Connect</h1>
+        <p>Find your duo. Connect with top-tier profiles today.</p>
+        
+        <form class="auth-container" id="authForm">
+            <h2 style="margin: 0; color: var(--text-dark);">Enter the App</h2>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Email Address" required>
+            <button type="submit" class="btn">Log In / Sign Up</button>
+        </form>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <nav class="navbar">
+            <h2>Love Connect 💖</h2>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+                <button class="logout-btn" id="logoutBtn">Log Out</button>
+            </div>
+        </nav>
+
+        <div class="dashboard-header">
+            <h2 style="color: var(--text-dark); font-size: 2em; margin-bottom: 5px;">Top Matches Near You</h2>
+            <p style="color: var(--text-light);">Swipe right to connect.</p>
+        </div>
+
+        <div class="upload-section">
+            <h3>Add a New Profile</h3>
+            <form id="addProfileForm">
+                <input type="text" id="newName" placeholder="Name & Age (e.g. John, 21)" required>
+                <input type="text" id="newHobbies" placeholder="Hobbies (e.g. Gym • Cars)" required>
+                <input type="text" id="newBio" placeholder="Short Bio" required>
+                
+                <input type="file" id="newPhoto" accept="image/*" required>
+                
+                <button type="submit" class="btn" style="margin-top: 10px;">Upload Profile</button>
+            </form>
+        </div>
+
+        <div class="profiles-grid" id="profilesContainer"></div>
+    </div>
+
+    <script>
+        // --- 1. PAGE NAVIGATION ---
+        const authForm = document.getElementById('authForm');
+        const landingPage = document.getElementById('landing-page');
+        const mainApp = document.getElementById('main-app');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            landingPage.classList.add('hidden'); 
+            mainApp.classList.remove('hidden'); 
+            window.scrollTo(0,0); 
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            mainApp.classList.add('hidden');
+            landingPage.classList.remove('hidden');
+            authForm.reset();
+        });
+
+        // --- 2. DARK MODE TOGGLE ---
+        const themeToggleBtn = document.getElementById('themeToggle');
+        themeToggleBtn.addEventListener('click', () => {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggleBtn.textContent = '🌙 Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = '☀️ Light Mode';
+            }
+        });
+
+        // --- 3. DYNAMIC SQUAD PROFILES ---
+        const profilesContainer = document.getElementById('profilesContainer');
+
+        // Using EXACT filenames from your uploads!
+        let users = [
+            { name: "Suban Khadka, 20", hobbies: "Gaming • Strategy • Esports", bio: "Dominating the leaderboards and building championship teams. Looking for my player 2. 🏆", img: "IMG_20260131_084009_517.jpg" },
+            { name: "Sijan Kumar, 18", hobbies: "Action Movies • Cars • Thrills", bio: "Just surviving the apocalypse and looking for a real connection. Let's go off-roading. 🎬🔥", img: "image_d8705d.png" },
+            { name: "Yugal Giri, 20", hobbies: "Powerlifting • Meal Prep • Podcasts", bio: "Gym is therapy. Looking for a spotter in the weight room and in life. 💪🏋️‍♂️", img: "image_d86cd3.png" },
+            { name: "Santiram Meche, 22", hobbies: "Guitar • Hiking • Road Trips", bio: "Always down for a mountain adventure or a late-night jam session. 🎸🏔️", img: "image_d86c59.jpg" },
+            { name: "Dr. Sandeep, 22", hobbies: "Medicine • Coffee • Reading", bio: "Saving lives and taking names. Looking for someone to explore the world with. 🩺✨", img: "image_d8685a.jpg" },
+            { name: "Sandeep Kalam, 20", hobbies: "Photography • Fashion • Nature", bio: "Chasing good vibes and foggy weather. Let's get lost in the woods together. 🌲⛅", img: "image_d864dc.jpg" }
+        ];
+
+        // Function to draw profiles to the screen
+        function renderProfiles() {
+            profilesContainer.innerHTML = ""; // Clear the grid first
+            users.forEach((user) => {
+                const card = document.createElement('div');
+                card.className = 'profile-card';
+                card.innerHTML = `
+                    <img src="${user.img}" alt="${user.name}" class="profile-img" onerror="this.src='https://via.placeholder.com/300?text=Missing+Image'">
+                    <div class="profile-info">
+                        <h3 class="profile-name">${user.name}</h3>
+                        <div class="profile-hobbies">${user.hobbies}</div>
+                        <p class="profile-bio">${user.bio}</p>
+                        <div class="card-actions">
+                            <button class="action-btn pass-btn" onclick="alert('You passed on ${user.name.split(',')[0]}!')">❌</button>
+                            <button class="action-btn like-btn" onclick="alert('It\\'s a Match! You liked ${user.name.split(',')[0]} ❤️')">❤️</button>
+                        </div>
+                    </div>
+                `;
+                profilesContainer.appendChild(card);
+            });
+        }
+
+        // Draw the initial 6 profiles
+        renderProfiles();
+
+        // --- 4. THE MAGIC: UPLOAD A NEW PHOTO & PROFILE ---
+        const addProfileForm = document.getElementById('addProfileForm');
+        const newPhotoInput = document.getElementById('newPhoto');
+
+        addProfileForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page reload
+            
+            // Get the photo file the user selected
+            const file = newPhotoInput.files[0];
+            
+            if (file) {
+                // We use FileReader to turn the image into a URL the browser can display instantly
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    // Create a new user object
+                    const newUser = {
+                        name: document.getElementById('newName').value,
+                        hobbies: document.getElementById('newHobbies').value,
+                        bio: document.getElementById('newBio').value,
+                        img: event.target.result // This is the uploaded image data!
+                    };
+                    
+                    // Add to our list and re-draw the screen!
+                    users.unshift(newUser); // unshift puts it at the VERY FRONT
+                    renderProfiles(); 
+                    addProfileForm.reset(); // Clear the form
+                };
+                
+                // Tell the reader to read the photo
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
